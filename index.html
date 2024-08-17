@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <style>
+  *{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box
+  }
+    .board {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      font-size: 50px
+    }
+    
+    .cell {
+      width: 100px;
+      height: 100px;
+      background-color: #88C2C4;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border: 2px solid;
+      transition: 0.2s linear;
+      text-shadow: 1px -1px 1px #7E7E7E;
+     -webkit-text-stroke: 2px #FFC806
+    }
+    
+    .playerX {
+      color: #01FF3D; 
+    }
+    
+    .playerO {
+      color: #C800FF; 
+    }
+.nil{
+  font-size: 30px;
+  color: blue;
+  text-align: center 
+}
+    .win {
+      background-color: yellow;
+    }
+
+    .tie {
+      background-color: #ccc;
+    }
+    .nineTen{
+      padding: 10px;
+      background: #1285FF;
+      color: #fff;
+      border: 1px solid #FF1212;
+      margin-top: 20px;
+      margin-left: 40%;
+      transition: 0.4s linear;
+      border-radius: 10px
+    }
+    .nineTen:hover{
+      background: #FF1212
+    }
+  </style>
+  <title>Tic Tac Toe</title>
+</head>
+<body>
+  <div class="board">
+    <div class="cell"></div>
+    <div class="cell"></div>
+    <div class="cell"></div>
+    <div class="cell"></div>
+    <div class="cell"></div>
+    <div class="cell"></div>
+    <div class="cell"></div>
+    <div class="cell"></div>
+    <div class="cell"></div>
+  </div>
+<div>
+  <p class="result"></p>
+</div>
+  <script>
+    const cells = document.querySelectorAll('.cell');    
+    let currentPlayer = 'X';
+    let gameEnded = false;
+let result = document.querySelector('.result');
+let btn = document.querySelector('.nineTen')
+    cells.forEach(cell => {
+      
+      cell.addEventListener('click', () => {
+        if (cell.textContent === '' && !gameEnded) {
+          cell.textContent = currentPlayer;
+          cell.classList.add(`player${currentPlayer}`);
+          
+          if (checkWin()) {
+            gameEnded = true;
+            cells.forEach(cell => {
+              if (!cell.classList.contains('win')) {
+                cell.textContent = '';
+              }
+            });
+            result.innerHTML =`<p class="nil">Player ${currentPlayer} wins!</p>`;
+            setTimeout(newGame,3000)
+          } else {
+            if ([...cells].every((c) => c.textContent !== '')) { // Check for a tie
+              gameEnded = true;
+              cells.forEach(cell => cell.classList.add('tie'));
+           result.innerHTML = `<p class="nil">it's a tie</p>`;
+           setTimeout(newGame,3000)
+            } else { // Next player's turn
+              currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+            }
+          }
+        }
+      });
+  
+    });
+
+    const checkWin = () => {
+      const winPatterns = [
+        [0, 1, 2], [3, 4, 5], [6, 7, 8],
+        [0, 3, 6], [1, 4, 7], [2, 5, 8],
+        [0, 4, 8], [2, 4, 6]
+      ];
+
+      return winPatterns.some(pattern => pattern.every(index => 
+        cells[index].textContent === currentPlayer
+      ));
+    };
+          function newGame() {
+        gameEnded = false;
+        currentPlayer = 'X';
+        cells.forEach(cell => {
+          cell.textContent = '';
+          cell.classList.remove('win', 'tie', 'playerX', 'playerO');
+        });
+        result.innerHTML = ''
+      }
+    </script>
+</body>
+</html>
